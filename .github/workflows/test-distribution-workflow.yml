@@ -26,12 +26,6 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.TEST_SLACK_WEBHOOK }}
 
-      - name: Any Name Bash Test Step
-        shell: bash
-        run: |
-          echo "GH_REPO: $SLACK_WEBHOOK_TEST"
-          env:
-          SLACK_WEBHOOK_TEST: ${{ secrets.TEST_SLACK_WEBHOOK }}
   #
   # Build homepage distribution from source
   #
