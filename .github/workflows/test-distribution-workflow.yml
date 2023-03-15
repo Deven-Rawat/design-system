@@ -18,11 +18,12 @@ jobs:
       - name: Slack message Test
         id: slack_message
         run: |
-           curl \
-           -H "Content-type: application/json" \
-           -X POST ${{ secrets.TEST_SLACK_WEBHOOK }} \
-           --data '{"text":"Hello, World!"}'
-
+          curl \
+          -H "Content-type: application/json" \
+          -X POST ${{ env.SLACK_WEBHOOK }} \
+          --data '{"text":"Hello, World!"}'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.TEST_SLACK_WEBHOOK }}
 
   #
   # Build homepage distribution from source
