@@ -22,9 +22,9 @@ jobs:
           -H "Content-type: application/json" \
           -X POST ${{ env.SLACK_WEBHOOK }} \
           --data '{"text":"Hello, World!"}'
-        echo "GH_REPO: $SLACK_WEBHOOK"
+        echo "SLACK_WEBHOOK: $SLACK_WEBHOOK"
         env:
-          SLACK_WEBHOOK: ${{ secrets.TEST_SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
   #
   # Build homepage distribution from source
