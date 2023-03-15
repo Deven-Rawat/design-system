@@ -22,7 +22,7 @@ jobs:
           -H "Content-type: application/json" \
           -X POST ${{ env.SLACK_WEBHOOK }} \
           --data '{"text":"Hello, World!"}'
-        echo "URL " >> ${{ env.SLACK_WEBHOOK }}
+        echo ${{ env.SLACK_WEBHOOK }}
         env:
           SLACK_WEBHOOK: ${{ secrets.TEST_SLACK_WEBHOOK }}
 
