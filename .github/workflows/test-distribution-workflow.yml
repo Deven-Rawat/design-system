@@ -362,7 +362,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.TEST_PIPELINE_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.TEST_PIPELINE_AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{secrets.TEST_S3_ORIGIN }}
+          aws-region: ${{secrets.TEST_S3_REGION }}
 
       #
       # Step 3
