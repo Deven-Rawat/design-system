@@ -526,51 +526,51 @@ jobs:
         working-directory: ${{steps.download.outputs.download-path}}
         run: aws s3 cp . s3://${{ secrets.TEST_S3_ORIGIN }}/storybook/${{ github.ref_name }} --recursive
 
-dist_homepage:
-  name: "Distribute Homepage"
-  needs:
-    - build_homepage
-  runs-on: ubuntu-latest
-  timeout-minutes: 20
+  dist_homepage:
+    name: "Distribute Homepage"
+    needs:
+      - build_homepage
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
 
-  steps:
-    #
-    # Step 1
-    # Download CDN artifact and merge version artifact into the same folder
-    #
-    - name: Download all workflow artifacts
-      uses: actions/download-artifact@v2
-      id: download
-      with:
-        name: homepage-dist
-        path: homepage-dist
-    - name: Download version artifacts
-      uses: actions/download-artifact@v2
-      with:
-        path: homepage-dist
+    steps:
+      #
+      # Step 1
+      # Download CDN artifact and merge version artifact into the same folder
+      #
+      - name: Download all workflow artifacts
+        uses: actions/download-artifact@v2
+        id: download
+        with:
+          name: homepage-dist
+          path: homepage-dist
+      - name: Download version artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: homepage-dist
 
-    #
-    # Step 2
-    # Set up AWS CLI
-    #
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.TEST_PIPELINE_AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.TEST_PIPELINE_AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{secrets.TEST_S3_REGION }}
+      #
+      # Step 2
+      # Set up AWS CLI
+      #
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TEST_PIPELINE_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TEST_PIPELINE_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{secrets.TEST_S3_REGION }}
 
-    #
-    # Step 3
-    # Create versioned release in S3
-    #
-    # WARNING BEFORE UPDATING CONFIG
-    # The sync --delete has the power to remove everything from the bucket. Please try --dryrun before committing an
-    # update!!!
-    #
-    - name: Replace homepage and it's assets
-      working-directory: ${{steps.download.outputs.download-path}}
-      run: aws s3 sync . s3://${{ secrets.TEST_S3_ORIGIN }}/ --exclude "cdn/*" --exclude "storybook/*" --exclude="error.html" --delete
+      #
+      # Step 3
+      # Create versioned release in S3
+      #
+      # WARNING BEFORE UPDATING CONFIG
+      # The sync --delete has the power to remove everything from the bucket. Please try --dryrun before committing an
+      # update!!!
+      #
+      - name: Replace homepage and it's assets
+        working-directory: ${{steps.download.outputs.download-path}}
+        run: aws s3 sync . s3://${{ secrets.TEST_S3_ORIGIN }}/ --exclude "cdn/*" --exclude "storybook/*" --exclude="error.html" --delete
   #
   # Clear the CloudFront cache.
   #
