@@ -412,3 +412,34 @@ jobs:
       - name: Create version
         working-directory: ${{steps.download.outputs.download-path}}
         run: aws s3 cp . s3://${{ secrets.TEST_S3_ORIGIN }}/storybook/${{ github.ref_name }} --recursive
+
+  #
+  # Clear the CloudFront cache.
+  #
+  clear_cache:
+    name: "Clear CloudFront Cache"
+    needs:
+      - dist_homepage
+      - dist_cdn
+      - dist_storybook
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      #
+      # Step 1
+      # Set up AWS CLI
+      #
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TEST_PIPELINE_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TEST_PIPELINE_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{secrets.TEST_S3_REGION }}
+
+      #
+      # Step 2
+      # Replace latest and invalid CloudFront's catch of latest
+      #
+      - name: Refesh CloudFront Cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/storybook/latest/*" "/cdn/latest/*" "/index.html"
